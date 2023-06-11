@@ -32,6 +32,7 @@ const ProductsScreen = () => {
 
 const styles = StyleSheet.create({
   itemContainer: {
+    fontFamily: 'Georgia',
     width: '50%',
     padding: 1,
   },

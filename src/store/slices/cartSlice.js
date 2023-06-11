@@ -4,6 +4,7 @@ const initialState = {
   items: [],
   deliveryFeee: 19,
   freeDeliveryFrom: 500,
+  numberOrder: 0,
 };
 
 export const cartSlice = createSlice({
@@ -36,8 +37,15 @@ export const cartSlice = createSlice({
         state.items = state.items.filter((item) => item !== cartItem);
       }
     },
+
+    makeOrder: (state) => {
+      state.numberOrder += 1;
+      state.items.length = 0;
+    },
   },
 });
+
+export const { addCartItem, changeQuantity, makeOrder } = cartSlice.actions;
 
 export const selectNumberItems = (state) => state.cart.items.length;
 
@@ -59,4 +67,4 @@ export const selectTotal = createSelector(
   selectSubtotal,
   selectedDeliveryPrice,
   (subtotal, deliveryPrice) => subtotal + deliveryPrice
-)
+);

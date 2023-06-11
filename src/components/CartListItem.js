@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
-import { cartSlice } from '../store/slices/cartSlice';
+import { changeQuantity } from '../store/slices/cartSlice';
 
 const CartListItem = ({ cartItem }) => {
   const dispatch = useDispatch();
 
   const increaseQuantity = () => {
     dispatch(
-      cartSlice.actions.changeQuantity({
+      changeQuantity({
         productId: cartItem.product.id,
         amount: 1,
       })
@@ -17,7 +17,7 @@ const CartListItem = ({ cartItem }) => {
 
   const decreaseQuantity = () => {
     dispatch(
-      cartSlice.actions.changeQuantity({
+     changeQuantity({
         productId: cartItem.product.id,
         amount: -1,
       })

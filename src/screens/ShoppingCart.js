@@ -1,76 +1,55 @@
-import { FlatList, View, StyleSheet, Pressable, Text } from 'react-native';
+import { FlatList, StyleSheet, Pressable, Text, Vibration } from 'react-native';
 import CartListItem from '../components/CartListItem';
-import { useSelector } from 'react-redux';
-import {
-  selectedDeliveryPrice,
-  selectSubtotal,
-  selectTotal,
-} from '../store/slices/cartSlice';
-
-const ShoppingCartTotals = () => {
-  const subtotal = useSelector(selectSubtotal);
-  const deliveryFee = useSelector(selectedDeliveryPrice);
-  const total = useSelector(selectTotal);
-
-  return (
-    <View style={styles.totalContainer}>
-      <View style={styles.row}>
-        <Text style={styles.text}> Subtotal </Text>
-        <Text style={styles.text}>{subtotal} US </Text>
-      </View>
-
-      <View style={styles.row}>
-        <Text style={styles.text}> Delivery </Text>
-        <Text style={styles.text}> {deliveryFee} US </Text>
-      </View>
-
-      <View style={styles.row}>
-        <Text style={styles.textBold}> Total </Text>
-        <Text style={styles.textBold}> {total} US </Text>
-      </View>
-    </View>
-  );
-};
+import { useSelector, useDispatch } from 'react-redux';
+import ShoppingCartTotals from '../components/ShoppingCartTotals';
+import { useNavigation } from '@react-navigation/native';
+import { makeOrder, selectSubtotal } from '../store/slices/cartSlice';
+import EmptyCart from './EmptyCart';
 
 const ShoppingCart = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const subtotal = useSelector(selectSubtotal);
 
-  return (
+  const order = () => {
+    dispatch(makeOrder());
+  };
+
+  const vibrate = () => {
+    Vibration.vibrate(100);
+  };
+
+  const handlePressable = () => {
+    order();
+    vibrate();
+  };
+
+  return subtotal > 0 ? (
     <>
       <FlatList
         data={cartItems}
         renderItem={({ item }) => <CartListItem cartItem={item} />}
-        ListFooterComponent={ShoppingCartTotals}
+        ListFooterComponent={<ShoppingCartTotals />}
       />
-
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Checkout</Text>
+      <Pressable
+        style={styles.button}
+        onPress={() => {
+          handlePressable();
+          navigation.navigate('Order');
+        }}
+      >
+        <Text style={styles.buttonText}>Checkout </Text>
       </Pressable>
     </>
+  ) : (
+    <EmptyCart />
   );
 };
 
 const styles = StyleSheet.create({
-  totalContainer: {
-    margin: 20,
-    paddingTop: 10,
-    borderColor: 'gainsboro',
-    borderTopWidth: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 2,
-  },
-  text: {
-    color: 'gray',
-    fontSize: 16,
-  },
-  textBold: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
   button: {
+    fontFamily: 'Georgia',
     position: 'absolute',
     backgroundColor: 'black',
     bottom: 30,
